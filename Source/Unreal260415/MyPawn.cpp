@@ -71,7 +71,7 @@ void AMyPawn::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	AddMovementInput(GetActorForwardVector());
+	AddMovementInput(GetActorForwardVector(), BoostValue);
 }
 
 // Called to bind functionality to input
@@ -81,7 +81,8 @@ void AMyPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 
 	PlayerInputComponent->BindAxis(TEXT("Pitch"), this, &AMyPawn::Pitch);
 	PlayerInputComponent->BindAxis(TEXT("Roll"), this, &AMyPawn::Roll);
-
+	PlayerInputComponent->BindAction(TEXT("Boost"), IE_Pressed, this, &AMyPawn::Boost);
+	PlayerInputComponent->BindAction(TEXT("Boost"), IE_Released, this, &AMyPawn::UnBoost);
 }
 
 void AMyPawn::Pitch(float Value)
@@ -94,7 +95,12 @@ void AMyPawn::Roll(float Value)
 	AddActorLocalRotation(FRotator(0.0f, 0.0f, Value * RotationSpeed * UGameplayStatics::GetWorldDeltaSeconds(GetWorld())));
 }
 
-void AMyPawn::Booster()
+void AMyPawn::Boost()
 {
+	BoostValue = 1.0f;
 }
 
+void AMyPawn::UnBoost()
+{
+	BoostValue = 0.6f;
+}

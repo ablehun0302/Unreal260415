@@ -62,8 +62,16 @@ public:
 
 	void Roll(float Value);
 
-	void Booster();
+	void Boost();
+
+	void UnBoost();
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Data)
+	float MovementSpeed = 1000.0f;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Data)
 	float RotationSpeed = 60.0f;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Data)
+	float BoostValue = 0.6f;
 };
