@@ -9,6 +9,7 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
 #include "GameFramework/FloatingPawnMovement.h"
+#include "Kismet/GameplayStatics.h"
 #include "MyStaticMeshComponent.h"
 
 // Sets default values
@@ -48,12 +49,14 @@ AMyPawn::AMyPawn()
 	SpringArm->SetupAttachment(Box);
 	SpringArm->TargetArmLength = 150.0f;
 	SpringArm->SocketOffset = FVector(0.0f, 0.0f, 30.0f);
+	SpringArm->bEnableCameraLag = true;
+	SpringArm->bEnableCameraRotationLag = true;
 
 	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
 	Camera->SetupAttachment(SpringArm);
 
 	FloatingMovement = CreateDefaultSubobject<UFloatingPawnMovement>(TEXT("FloatingMovement"));
-	FloatingMovement->MaxSpeed = 10.0f;
+	FloatingMovement->MaxSpeed = 1000.0f;
 }
 
 // Called when the game starts or when spawned
@@ -67,6 +70,8 @@ void AMyPawn::BeginPlay()
 void AMyPawn::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	AddMovementInput(GetActorForwardVector());
 }
 
 // Called to bind functionality to input
@@ -74,5 +79,22 @@ void AMyPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
+	PlayerInputComponent->BindAxis(TEXT("Pitch"), this, &AMyPawn::Pitch);
+	PlayerInputComponent->BindAxis(TEXT("Roll"), this, &AMyPawn::Roll);
+
+}
+
+void AMyPawn::Pitch(float Value)
+{
+	AddActorLocalRotation(FRotator(Value * RotationSpeed * UGameplayStatics::GetWorldDeltaSeconds(GetWorld()), 0.0f, 0.0f));
+}
+
+void AMyPawn::Roll(float Value)
+{
+	AddActorLocalRotation(FRotator(0.0f, 0.0f, Value * RotationSpeed * UGameplayStatics::GetWorldDeltaSeconds(GetWorld())));
+}
+
+void AMyPawn::Booster()
+{
 }
 

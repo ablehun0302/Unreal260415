@@ -57,4 +57,13 @@ public:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Components)
 	TObjectPtr<UFloatingPawnMovement> FloatingMovement;
+
+	void Pitch(float Value);
+
+	void Roll(float Value);
+
+	void Booster();
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Data)
+	float RotationSpeed = 60.0f;
 };
